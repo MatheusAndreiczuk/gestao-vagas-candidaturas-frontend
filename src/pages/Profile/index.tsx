@@ -148,7 +148,9 @@ function Profile() {
                         </>
 
                     ) : (
-                        userData && <EditUserData {...userData} refetchUserData={fetchUserData} />
+                        (isCompany ? companyData : userData) && (
+                            <EditUserData {...(isCompany ? companyData : userData)!} refetchUserData={fetchUserData} />
+                        )
                     )}
 
                 </div>
