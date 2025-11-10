@@ -81,22 +81,22 @@ export function EditUserData({ refetchUserData, ...userData }: SaveUserDataProps
                             </span>
 
                             <span>
-                                <Input label='Email' required type="email" placeholder='Digite o email' {...register('email')} />
+                                <Input label='Email' type="email" placeholder='Digite o email' {...register('email')} />
                                 {errors.email && <span className='text-red-600'>{(errors.email as any)?.message}</span>}
                             </span>
 
                             <span>
-                                <Input label='Phone' required type="text" placeholder='Digite o telefone' {...register('phone')} />
+                                <Input label='Phone' type="text" placeholder='Digite o telefone' {...register('phone')} />
                                 {errors.phone && <span className='text-red-600'>{(errors.phone as any)?.message}</span>}
                             </span>
 
                             <span>
-                                <Input label='Education' required istextarea type="text" placeholder='Digite a formação' {...register('education')} />
+                                <Input label='Education' istextarea type="text" placeholder='Digite a formação' {...register('education')} />
                                 {(errors as any).education && <span className='text-red-600'>{((errors as any).education as any)?.message}</span>}
                             </span>
 
                             <span>
-                                <Input label='Experience' required istextarea type="text" placeholder='Digite a experiência' {...register('experience')} />
+                                <Input label='Experience' istextarea type="text" placeholder='Digite a experiência' {...register('experience')} />
                                 {(errors as any).experience && <span className='text-red-600'>{((errors as any).experience as any)?.message}</span>}
                             </span>
                         </>

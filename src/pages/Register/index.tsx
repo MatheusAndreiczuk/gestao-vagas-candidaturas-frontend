@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 import { Input } from '../../components/Input.js'
 import { Button } from '../../components/Button.js'
 import Select from 'react-select'
+import { Link } from 'react-router-dom'
 
 type createUserSchema = z.infer<typeof createUserSchema>
 
@@ -33,10 +34,12 @@ function RegisterForm() {
         navigate('/')
     }
 
+
+
     return (
         <>
             <div className='w-lg mx-auto mt-10'>
-                <form className='flex flex-col gap-2 mx-auto bg-gray-50 p-10 rounded-lg shadow-xl'
+                <form className='flex flex-col gap-2 mx-auto bg-gray-50 px-10 py-8 rounded-lg shadow-xl'
                     onSubmit={handleSubmit(handleCreateUser)}
                 >
                     <h1 className='text-center font-bold text-3xl'>Cadastro</h1>
@@ -174,6 +177,9 @@ function RegisterForm() {
                         </>
                     )}
                     <Button type="submit" color="blue"> Cadastrar </Button>
+                    <Link to="/" className="block text-center text-blue-500 hover:underline cursor-pointer text-lg" >
+                        Já possui conta? Faça login
+                    </Link>
                 </form>
             </div>
         </>

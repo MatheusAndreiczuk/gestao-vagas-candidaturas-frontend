@@ -1,4 +1,3 @@
-import { api } from './../services/axios';
 import { z } from 'zod';
 
 export const companySchema = z.object({

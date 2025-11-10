@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { api } from "../../services/axios.js"
 import { EditUserData } from "./editProfile.tsx"
 import { useEditingProfileStore } from '../../store/editing.ts'
@@ -6,7 +6,6 @@ import { parseJwt } from "../../utils/parseJwt.js"
 import { AlertDialog } from "../../components/AlertDialog.tsx"
 import { useNavigate } from "react-router-dom"
 import { Navbar } from '../../components/Navbar.tsx'
-import { logout } from "../../utils/logout.ts"
 import { CompanySchema } from "../../schemas/companySchema.ts"
 import { CreateUserSchema } from "../../schemas/userSchema.ts"
 import { Button } from "../../components/Button.tsx"
@@ -96,7 +95,7 @@ function Profile() {
         <>
             <Navbar />
             <div className="flex items-center mt-10 flex-col min-h-screen">
-                <div className="w-lg p-8 rounded-md shadow-lg border border-gray-300">
+                <div className="w-lg p-8 rounded-md bg-gray-50 shadow-xl">
                     {!editingProfile ? (
                         <>
                             <fieldset className="p-7 border rounded-md border-black">
