@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, forwardRef } from "react";
+import React, { ComponentPropsWithoutRef, forwardRef } from "react";
 
 interface InputProps extends ComponentPropsWithoutRef<"input"> {
     label?: string;
@@ -6,7 +6,7 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
     required?: boolean;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
     ({ required, label, istextarea, ...rest }, ref) => {
         return (
             <div className="flex flex-col">
@@ -14,15 +14,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     {required && <span className='text-red-600 pr-1'>*</span>}{label}
                 </label>
                 {istextarea ? (
-                    <textarea 
-                        {...(rest as ComponentPropsWithoutRef<"textarea">)} 
-                        className="border rounded-md p-2" 
+                    <textarea
+                        {...(rest as ComponentPropsWithoutRef<"textarea">)}
+                        ref={ref as React.Ref<HTMLTextAreaElement>}
+                        className={"border rounded-md p-2"}
                     />
                 ) : (
-                    <input 
-                        {...rest} 
-                        ref={ref} 
-                        className="border rounded-md p-2 w-full" 
+                    <input
+                        {...rest}
+                        ref={ref as React.Ref<HTMLInputElement>}
+                        className={"border rounded-md p-2 w-full"}
                     />
                 )}
             </div>

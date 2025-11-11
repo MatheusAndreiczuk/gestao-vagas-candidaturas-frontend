@@ -34,8 +34,6 @@ function RegisterForm() {
         navigate('/')
     }
 
-
-
     return (
         <>
             <div className='w-lg mx-auto mt-10'>
@@ -93,12 +91,12 @@ function RegisterForm() {
                             </span>
 
                             <span>
-                                <Input label='Experience' istextarea type="text" placeholder='Experiência profissional (opcional)' {...register('experience')} />
+                                <Input label='Experience' istextarea placeholder='Experiência profissional (opcional)' {...register('experience')} />
                                 {(errors as any).experience && <span className='text-red-600'>{(errors as any).experience?.message}</span>}
                             </span>
 
                             <span>
-                                <Input label='Education' istextarea type="text" placeholder='Educação / formação acadêmica (opcional)' {...register('education')} />
+                                <Input label='Education' istextarea placeholder='Educação / formação acadêmica (opcional)' {...register('education')} />
                                 {(errors as any).education && <span className='text-red-600'>{(errors as any).education?.message}</span>}
                             </span>
                         </>
