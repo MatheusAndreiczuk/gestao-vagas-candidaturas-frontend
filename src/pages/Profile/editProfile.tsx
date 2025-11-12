@@ -1,15 +1,16 @@
-import { createUserSchema } from '../../schemas/userSchema.ts'
+import { createUserSchema } from '../../schemas/userSchema.js'
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '../../services/axios.js';
-import { useEditingProfileStore } from '../../store/editing.ts';
+import { useEditingProfileStore } from '../../store/editing.js';
 import { parseJwt } from '../../utils/parseJwt.js';
-import { CompanySchema, companySchema, validStates } from '../../schemas/companySchema.ts';
+import { CompanySchema, companySchema, validStates } from '../../schemas/companySchema.js';
 import { useEffect, useState } from 'react';
-import { Input } from '../../components/Input.tsx';
+import { Input } from '../../components/Input.js';
 import Select from 'react-select';
-import { Button } from '../../components/Button.tsx';
+import { Button } from '../../components/Button.js';
+import React from "react";
 
 type userSchema = z.infer<typeof createUserSchema>
 

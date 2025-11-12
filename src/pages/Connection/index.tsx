@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
-import { useDataConnectionStore } from "../../store/connectionData.ts";
-import { Input } from "../../components/Input.tsx";
-import { Button } from "../../components/Button.tsx";
+import { useDataConnectionStore } from "../../store/connectionData.js";
+import { Input } from "../../components/Input.js";
+import { Button } from "../../components/Button.js";
+import React from "react";
 
 
 interface ConnectionFormData {

@@ -3,8 +3,9 @@ import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from '../../services/axios.js'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button } from '../../components/Button.tsx'
-import { Input } from '../../components/Input.tsx'
+import { Button } from '../../components/Button.js'
+import { Input } from '../../components/Input.js'
+import React from "react";
 
 const loginSchema = z.object({
     username: z.

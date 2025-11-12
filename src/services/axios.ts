@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { useDataConnectionStore } from '../store/connectionData.ts';
+import { useDataConnectionStore } from '../store/connectionData.js';
 
 export const api = axios.create({
     headers: {
@@ -8,7 +8,6 @@ export const api = axios.create({
     },
 })
 
-// Interceptor para pegar IP e porta dinamicamente antes de cada requisição
 api.interceptors.request.use((config) => {
     const { ip, port } = useDataConnectionStore.getState();
     config.baseURL = `http://${ip}:${port}`;

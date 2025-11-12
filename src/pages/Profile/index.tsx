@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { api } from "../../services/axios.js"
-import { EditUserData } from "./editProfile.tsx"
-import { useEditingProfileStore } from '../../store/editing.ts'
+import { EditUserData } from "./editProfile.js"
+import { useEditingProfileStore } from '../../store/editing.js'
 import { parseJwt } from "../../utils/parseJwt.js"
-import { AlertDialog } from "../../components/AlertDialog.tsx"
+import { AlertDialog } from "../../components/AlertDialog.js"
 import { useNavigate } from "react-router-dom"
-import { Navbar } from '../../components/Navbar.tsx'
-import { CompanySchema } from "../../schemas/companySchema.ts"
-import { CreateUserSchema } from "../../schemas/userSchema.ts"
-import { Button } from "../../components/Button.tsx"
+import { Navbar } from '../../components/Navbar.js'
+import { CompanySchema } from "../../schemas/companySchema.js"
+import { CreateUserSchema } from "../../schemas/userSchema.js"
+import { Button } from "../../components/Button.js"
 
 // interface User {
 //     username: string,
