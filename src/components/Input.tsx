@@ -4,10 +4,11 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
     label?: string;
     istextarea?: boolean;
     required?: boolean;
+    rows?: number;
 }
 
 export const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
-    ({ required, label, istextarea, ...rest }, ref) => {
+    ({ required, label, istextarea, rows, ...rest }, ref) => {
         return (
             <div className="flex flex-col">
                 <label className="pl-1 mb-1 font-medium text-gray-700">
@@ -17,6 +18,7 @@ export const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputPro
                     <textarea
                         {...(rest as ComponentPropsWithoutRef<"textarea">)}
                         ref={ref as React.Ref<HTMLTextAreaElement>}
+                        rows={rows}
                         className={"border rounded-md p-2"}
                     />
                 ) : (

@@ -6,6 +6,9 @@ import Home from "./pages/Home"
 import Profile from "./pages/Profile"
 import Connection from "./pages/Connection"
 import ConnectionLabel from "./components/ConnectionLabel"
+import Job from './pages/Job'
+import JobForm from './pages/Job/jobForm'
+import EditJobForm from './pages/Job/editJob'
 
 function App() {
 
@@ -30,6 +33,24 @@ function App() {
         <Route path='/profile' element={
         <PrivateRoute>
           <Profile />
+        </PrivateRoute>
+        } />
+
+        <Route path='/announce' element={
+        <PrivateRoute>
+          <JobForm />
+        </PrivateRoute>
+        } />
+
+        <Route path='/jobs/edit/:id' element={
+        <PrivateRoute>
+          <EditJobForm />
+        </PrivateRoute>
+        } />
+
+        <Route path='/jobs/:id' element={
+        <PrivateRoute>
+          <Job />
         </PrivateRoute>
         } />
 

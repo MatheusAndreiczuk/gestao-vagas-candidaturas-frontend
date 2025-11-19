@@ -80,7 +80,7 @@ function Profile() {
 
     return (
         <>
-            <Navbar />
+            <Navbar role={role} />
             <div className="flex items-center mt-10 flex-col min-h-screen">
                 <div className="w-lg p-8 rounded-md bg-gray-50 shadow-xl">
                     {!editingProfile ? (

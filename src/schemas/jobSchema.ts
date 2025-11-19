@@ -19,20 +19,21 @@ export const getJobSchema = z.object({
         string()
         .min(2, { message: 'O nome da empresa deve ter pelo menos 2 caracteres.' })
         .max(150, { message: 'O nome da empresa deve ter no máximo 150 caracteres.' }),
-    location: z.
+    city: z.
         string()
-        .min(2, { message: 'A localização deve ter pelo menos 2 caracteres.' })
-        .max(100, { message: 'A localização deve ter no máximo 100 caracteres.' }),
-    contact: z.
+        .min(5, { message: 'A cidade deve ter pelo menos 5 caracteres.' })
+        .max(100, { message: 'A cidade deve ter no máximo 100 caracteres.' }),
+    state: z.
         string()
-        .min(5, { message: 'O contato deve ter pelo menos 5 caracteres.' })
-        .max(100, { message: 'O contato deve ter no máximo 100 caracteres.' }),
+        .min(2, { message: 'O estado deve ter pelo menos 2 caracteres.' })
+        .max(100, { message: 'O estado deve ter no máximo 100 caracteres.' }),
     salary: z.
-        coerce.number()
+        number()
         .optional()
-        .or(z.string().regex(/^\d+(\.\d{1,2})?$/, 'Salário deve ser um número válido').transform((val) => parseFloat(val)))
-        .or(z.literal(''))
-        .nullish()
+        .nullable()
 })
 
+export const createJobSchema = getJobSchema.omit({ id: true, company: true });
+
 export type GetJobSchema = z.infer<typeof getJobSchema>;
+export type CreateJobSchema = z.infer<typeof createJobSchema>;
