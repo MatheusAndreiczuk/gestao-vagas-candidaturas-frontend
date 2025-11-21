@@ -4,9 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useDataConnectionStore } from "../../store/connectionData.js";
 import { Input } from "../../components/Input.js";
 import { Button } from "../../components/Button.js";
-import React from "react";
-
-
 interface ConnectionFormData {
     ip: string;
     port: number;
@@ -25,7 +22,6 @@ function Connection() {
     })
 
     function connectServer(data: ConnectionFormData) {
-        // Converte port para número se vier como string
         const port = typeof data.port === 'string' ? Number(data.port) : data.port;
         
         console.log('Conectando em:', data.ip, port);

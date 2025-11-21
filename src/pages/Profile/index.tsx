@@ -47,7 +47,7 @@ function Profile() {
     const handleConfirmDelete = async () => {
         setIsLoading(true);
         try {
-            await api.delete(`/${getRoute}/${userId}`,
+            await api.delete(`${getRoute}${userId}`,
                 {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }
