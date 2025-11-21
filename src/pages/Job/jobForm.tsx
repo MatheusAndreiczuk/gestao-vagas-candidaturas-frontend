@@ -9,34 +9,52 @@ import { useAuth } from "../../context/AuthContext.js";
 import { Navbar } from "../../components/Navbar.js";
 import { validStates } from "../../schemas/companySchema.js";
 import Select from 'react-select'
+import { useState } from "react";
+import { ConfirmJobAnnouncementModal } from "../../components/ConfirmJobAnnouncementModal.js";
 
 function JobForm() {
     const { token, decodedToken } = useAuth();
     const navigate = useNavigate();
     const role = decodedToken?.role;
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [formData, setFormData] = useState<CreateJobSchema | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, control } = useForm<CreateJobSchema>({
         resolver: zodResolver(createJobSchema)
     })
 
-    const onSubmit = async (data: CreateJobSchema) => {
+    const handleFormSubmit = async (data: CreateJobSchema) => {
+        setFormData(data);
+        setShowConfirmModal(true);
+    }
+
+    const handleConfirmAnnouncement = async () => {
+        if (!formData) return;
+        
+        setIsSubmitting(true);
         try {
-            const response = await api.post('/jobs', data, {
+            const response = await api.post('/jobs', formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log('Vaga criada com sucesso:', response.data);
+            alert('Vaga publicada com sucesso!');
             navigate('/home');
         } catch (error) {
             console.error('Erro ao criar vaga:', error);
+            alert('Erro ao publicar vaga. Tente novamente.');
+        } finally {
+            setIsSubmitting(false);
+            setShowConfirmModal(false);
         }
     }
 
     return (
         <>
             <Navbar role={role} />
-            <div className="mt-10 flex justify-center">
-                <div className="w-4xl p-8 rounded-lg shadow-xl bg-gray-50">
-                    <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mt-10 flex justify-center px-4">
+                <div className="w-full max-w-4xl p-4 md:p-8 rounded-lg shadow-xl bg-gray-50">
+                    <form onSubmit={handleSubmit(handleFormSubmit)}>
                         <h1 className="text-2xl font-bold mb-4">Anunciar Vaga</h1>
                         <div className="flex flex-col gap-2">
                             <Input
@@ -113,13 +131,23 @@ function JobForm() {
                             />
                             {errors.description && <p className="text-red-600 text-sm">{errors.description.message}</p>}
                         </div>
-                        <div className="flex justify-end gap-5">
+                        <div className="flex flex-col sm:flex-row justify-end gap-3 md:gap-5">
                             <Button type="button" color="red" onClick={() => { navigate('/home') }}>Cancelar</Button>
-                            <Button type="submit">Anunciar Vaga</Button>
+                            <Button type="submit">Continuar</Button>
                         </div>
                     </form>
                 </div>
             </div>
+
+            {formData && (
+                <ConfirmJobAnnouncementModal
+                    jobData={formData}
+                    isOpen={showConfirmModal}
+                    onClose={() => setShowConfirmModal(false)}
+                    onConfirm={handleConfirmAnnouncement}
+                    isSubmitting={isSubmitting}
+                />
+            )}
         </>
     )
 }

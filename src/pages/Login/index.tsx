@@ -33,7 +33,7 @@ function Login (){
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <div className="rounded-lg shadow-xl bg-gray-50 w-lg">
+            <div className="sm:rounded-lg sm:shadow-xl sm:bg-gray-50 w-lg">
                 <h1 className="text-center font-bold text-2xl mt-10">Login</h1>
                 <form className="flex flex-col gap-5 p-10" onSubmit={handleSubmit(loginHook)}>
                     <Input required label='Username'

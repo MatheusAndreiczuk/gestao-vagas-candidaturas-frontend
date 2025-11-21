@@ -6,14 +6,14 @@ import { MapPin, Briefcase, Banknote, Earth } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { api } from "../services/axios"
 import { useAuth } from "../context/AuthContext"
-import JobApplication from "../pages/Job/jobApplication"
 
 type JobCardProps = GetJobSchema & {
     role?: string | null
     isView?: boolean
+    hasApplied?: boolean
 }
 
-export function JobCard({ role, isView, ...props }: JobCardProps) {
+export function JobCard({ role, isView, hasApplied, ...props }: JobCardProps) {
     const navigate = useNavigate();
     const { token } = useAuth();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,32 +44,49 @@ export function JobCard({ role, isView, ...props }: JobCardProps) {
         }
 
     return (
-        <div className="border shadow-lg rounded-lg px-5 py-4">
-            <div className="flex flex-col gap-5">
+        <div className="border shadow-lg rounded-lg px-4 md:px-5 py-3 md:py-4 flex flex-col h-full">
+            <div className="flex flex-col gap-3 md:gap-5 flex-1">
                 <div>
-                    <h1 className="text-lg font-semibold flex items-center gap-1"> <Briefcase className="inline pr-1" />{props.title}</h1>
-                    <p className="text-gray-500 flex items-center gap-1 text-sm">{props.company}</p>
+                    <h1 className="text-base md:text-lg font-semibold flex items-center gap-1 wrap-break-words"> 
+                        <Briefcase className="inline shrink-0 w-4 h-4 md:w-5 md:h-5" />
+                        <span className="wrap-break-words">{props.title}</span>
+                    </h1>
+                    <p className="text-gray-500 flex items-center gap-1 text-xs md:text-sm mt-1 wrap-break-words">{props.company}</p>
                 </div>
-                <div className="flex flex-row gap-5 items-center">
-                    <p className="text-sm text-gray-500 items-center"><MapPin className="inline pr-1" />{props.city}/{props.state}</p>
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                        <Earth className="inline pr-1" />{props.area}
+                <div className="flex flex-col gap-2 text-xs md:text-sm">
+                    <p className="text-gray-500 flex items-center gap-1">
+                        <MapPin className="shrink-0 w-4 h-4" />
+                        <span className="wrap-break-words">{props.city}/{props.state}</span>
                     </p>
-
+                    <p className="text-gray-500 flex items-center gap-1">
+                        <Earth className="shrink-0 w-4 h-4" />
+                        <span className="wrap-break-words">{props.area}</span>
+                    </p>
                 </div>
                 {isView && (
-                    <p className="text-sm text-gray-500">{props.description}</p>
+                    <p className="text-xs md:text-sm text-gray-500 line-clamp-3">{props.description}</p>
                 )}
-                <div className="flex flex-row justify-between items-center mt-5 border-t pt-2">
-                    <p className="text-sm text-gray-500">
-                        <Banknote className="inline pr-1" />{props.salary ? `R$ ${props.salary.toFixed(2)}` : 'Salário não informado'}
-                    </p>
-                    {role == 'user' && isView ?
+            </div>
+            <div className="flex flex-col gap-3 mt-3 md:mt-5 border-t pt-3">
+                <p className="text-xs md:text-sm text-gray-500 flex items-center gap-1">
+                    <Banknote className="shrink-0 w-4 h-4" />
+                    <span className="wrap-break-words">{props.salary ? `R$ ${props.salary.toFixed(2)}` : 'Não informado'}</span>
+                </p>
+                <div className="flex flex-col gap-2 w-full">{role == 'user' && isView ?
                         (
-                            <Button size="sm" onClick={() => {navigate(`/jobs/application/${props.id}`)}}>Candidatar-se</Button>
+                            hasApplied ? (
+                                <Button size="sm" onClick={() => navigate('/applications')}>
+                                    Ver Candidaturas
+                                </Button>
+                            ) : (
+                                <Button size="sm" onClick={() => navigate(`/jobs/application/${props.id}`)}>
+                                    Candidatar-se
+                                </Button>
+                            )
                         ) : role == 'company' && isView ?
                             (
-                                <span>
+                                <div className="flex flex-col gap-2">
+                                    <Button size="sm" onClick={() => { navigate(`/jobs/${props.id}/candidates`) }}>Ver Candidatos</Button>
                                     <Button size="sm" onClick={() => { navigate(`/jobs/edit/${props.id}`) }}>Editar</Button>
                                     <Button size="sm" onClick={handleOpenDialog}>Excluir</Button>
 
@@ -84,7 +101,7 @@ export function JobCard({ role, isView, ...props }: JobCardProps) {
                                         confirmColor="error"
                                         isLoading={isLoading}
                                     />
-                                </span>
+                                </div>
                             ) : (
                                 <Button size="sm" onClick={() => { navigate(`/jobs/${props.id}`) }}>Detalhes</Button>
                             )

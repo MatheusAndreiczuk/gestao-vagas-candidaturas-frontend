@@ -36,12 +36,12 @@ function RegisterForm() {
 
     return (
         <>
-            <div className='w-lg mx-auto mt-10'>
-                <form className='flex flex-col gap-2 mx-auto bg-gray-50 px-10 py-8 rounded-lg shadow-xl'
+            <div className='w-full max-w-2xl mx-auto mt-10 px-4'>
+                <form className='flex flex-col gap-2 mx-auto bg-gray-50 px-4 sm:px-6 md:px-10 py-6 md:py-8 rounded-lg shadow-xl'
                     onSubmit={handleSubmit(handleCreateUser)}
                 >
-                    <h1 className='text-center font-bold text-3xl'>Cadastro</h1>
-                    <div className='flex gap-8 justify-center py-2 items-center'>
+                    <h1 className='text-center font-bold text-2xl md:text-3xl'>Cadastro</h1>
+                    <div className='flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center py-2 items-start sm:items-center'>
                         <span className='flex gap-2 items-center'>
                             <input
                                 type="radio"
@@ -49,7 +49,7 @@ function RegisterForm() {
                                 value="company"
                                 checked={role === 'company'}
                                 onChange={(e) => setRole(e.target.value)}
-                            /><label className='font-medium text-lg'>Pessoa Jurídica</label>
+                            /><label className='font-medium text-base md:text-lg'>Pessoa Jurídica</label>
                         </span>
                         <span className='flex gap-2 items-center'>
                             <input
@@ -58,7 +58,7 @@ function RegisterForm() {
                                 value="user"
                                 checked={role === 'user'}
                                 onChange={(e) => setRole(e.target.value)}
-                            /><label className='font-medium text-lg'>Pessoa Física</label>
+                            /><label className='font-medium text-base md:text-lg'>Pessoa Física</label>
                         </span>
                     </div>
                     {role == "user" && (
@@ -119,8 +119,8 @@ function RegisterForm() {
                                 {errors.password && <span className='text-red-600'>{(errors.password as any)?.message}</span>}
                             </span>
 
-                            <div className='flex flex-row gap-3 w-full'>
-                                <span className='flex-2'>
+                            <div className='flex flex-col sm:flex-row gap-3 w-full'>
+                                <span className='flex-1 sm:flex-2'>
                                     <Input className="w-full" label='Business' required type="text" placeholder='Digite o ramo da empresa' {...register('business')} />
                                     {(errors as any).business && <span className='text-red-600'>{((errors as any).business)?.message}</span>}
                                 </span>
@@ -135,8 +135,8 @@ function RegisterForm() {
                                 {(errors as any).email && <span className='text-red-600'>{((errors as any).email)?.message}</span>}
                             </span>
 
-                            <div className='flex flex-row gap-3 w-full'>
-                                <span className='flex-3'>
+                            <div className='flex flex-col sm:flex-row gap-3 w-full'>
+                                <span className='flex-1 sm:flex-3'>
                                     <Input className="w-full" label='Cidade' required type="text" placeholder='Digite a cidade' {...register('city')} />
                                     {(errors as any).city && <span className='text-red-600'>{((errors as any).city)?.message}</span>}
                                 </span>
@@ -162,8 +162,8 @@ function RegisterForm() {
                                 </span>
                             </div>
 
-                            <div className='flex flex-row gap-3 w-full'>
-                                <span className='flex-3'>
+                            <div className='flex flex-col sm:flex-row gap-3 w-full'>
+                                <span className='flex-1 sm:flex-3'>
                                     <Input className="w-full" label='Rua / avenida' required type="text" placeholder='Digite a rua / avenida' {...register('street')} />
                                     {(errors as any).street && <span className='text-red-600'>{((errors as any).street)?.message}</span>}
                                 </span>

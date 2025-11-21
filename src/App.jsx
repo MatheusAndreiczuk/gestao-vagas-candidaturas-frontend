@@ -10,6 +10,8 @@ import Job from './pages/Job'
 import JobForm from './pages/Job/jobForm'
 import EditJobForm from './pages/Job/editJob'
 import JobApplication from "./pages/Job/jobApplication"
+import Candidates from "./pages/Job/candidates"
+import Applications from "./pages/Applications"
 
 function App() {
 
@@ -58,6 +60,18 @@ function App() {
         <Route path='/jobs/application/:id' element={
         <PrivateRoute>
           <JobApplication />
+        </PrivateRoute>
+        } />
+
+        <Route path='/jobs/:id/candidates' element={
+        <PrivateRoute>
+          <Candidates />
+        </PrivateRoute>
+        } />
+
+        <Route path='/applications' element={
+        <PrivateRoute>
+          <Applications />
         </PrivateRoute>
         } />
 

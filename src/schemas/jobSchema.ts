@@ -30,7 +30,11 @@ export const getJobSchema = z.object({
     salary: z.
         number()
         .optional()
+        .nullable(),
+    feedback: z.
+        string()
         .nullable()
+        .optional()
 })
 
 export const jobApplicationSchema = z.object({

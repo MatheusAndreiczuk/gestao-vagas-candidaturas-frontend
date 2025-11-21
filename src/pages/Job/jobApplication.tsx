@@ -9,6 +9,7 @@ import { Button } from "../../components/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../services/axios";
 import { useState, useEffect } from "react";
+import { ConfirmApplicationModal } from "../../components/ConfirmApplicationModal";
 
 function JobApplication() {
     const navigate = useNavigate();
@@ -17,15 +18,24 @@ function JobApplication() {
     const { id } = useParams();
     const [job, setJob] = useState<GetJobSchema>({} as GetJobSchema);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [formData, setFormData] = useState<JobApplicationSchema | null>(null);
 
     const { register, handleSubmit, formState: { errors } } = useForm<JobApplicationSchema>({
         resolver: zodResolver(jobApplicationSchema)
     });
 
-    async function handleCreateApplication(data: JobApplicationSchema) {
+    async function handleFormSubmit(data: JobApplicationSchema) {
+        setFormData(data);
+        setShowConfirmModal(true);
+    }
+
+    async function handleConfirmApplication() {
+        if (!formData) return;
+        
         setIsSubmitting(true);
         try {
-            const response = await api.post(`/jobs/${id}`, data, {
+            const response = await api.post(`/jobs/${id}`, formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log('Candidatura enviada com sucesso:', response.data);
@@ -37,6 +47,7 @@ function JobApplication() {
             alert(errorMessage);
         } finally {
             setIsSubmitting(false);
+            setShowConfirmModal(false);
         }
     }
 
@@ -45,19 +56,15 @@ function JobApplication() {
             const response = await api.get(`/jobs/${jobId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log('Resposta completa da API:', response.data);
             const jobData = response.data.items;
-            console.log('jobData:', jobData);
             const mappedJob = { ...jobData, id: Number(jobData.job_id) };
-            console.log('mappedJob:', mappedJob);
             setJob(mappedJob);
         } catch (error) {
-            console.error("Erro ao buscar vaga no candidate-se:", error);
+            console.error("Erro ao buscar vaga:", error);
         }
     }
 
     useEffect(() => {
-        console.log('useEffect executado, id:', id);
         if (id && token) {
             fetchJob(id);
         }
@@ -67,9 +74,9 @@ function JobApplication() {
     return (
         <>
             <Navbar role={role} />
-            <div className="mt-8 flex justify-center">
-                <div className="w-7xl p-6 rounded-lg shadow-xl bg-gray-50 mb-6">
-                    <form onSubmit={handleSubmit(handleCreateApplication)}>
+            <div className="mt-6 md:mt-8 flex justify-center px-4">
+                <div className="w-full max-w-7xl p-4 md:p-6 rounded-lg shadow-xl bg-gray-50 mb-6">
+                    <form onSubmit={handleSubmit(handleFormSubmit)}>
                         <h1 className="text-2xl font-bold mb-4">Enviar Candidatura</h1>
                         <div className="flex flex-col gap-2">
                             <Input
@@ -113,17 +120,6 @@ function JobApplication() {
                             {errors.experience && <p className="text-red-600 text-sm">{errors.experience.message}</p>}
                         </div>
 
-                        {job.title && (
-                            <div className="mt-4 pt-4 border-t border-gray-300 flex">
-                                <p className="font-semibold mb-2">Você está se candidatando para:</p>
-                                <p><strong>Vaga:</strong> {job.title}</p>
-                                <p><strong>Empresa:</strong> {job.company}</p>
-                                <p><strong>Local:</strong> {job.city}/{job.state}</p>
-                                <p><strong>Área:</strong> {job.area}</p>
-                                <p className="text-sm text-gray-600 mt-2">Antes de prosseguir, fique ciente das suas atribuições e dos requisitos da vaga.</p>
-                            </div>
-                        )}
-
                         <div className="flex justify-end gap-5 mt-4">
                             <Button
                                 type="button"
@@ -137,12 +133,20 @@ function JobApplication() {
                                 type="submit"
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? 'Enviando...' : 'Enviar candidatura'}
+                                Continuar
                             </Button>
                         </div>
                     </form>
-                </div >
-            </div >
+                </div>
+            </div>
+
+            <ConfirmApplicationModal
+                job={job}
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={handleConfirmApplication}
+                isSubmitting={isSubmitting}
+            />
         </>
     )
 }

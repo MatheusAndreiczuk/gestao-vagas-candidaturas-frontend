@@ -4,7 +4,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '../../services/axios.js';
 import { useEditingProfileStore } from '../../store/editing.js';
-import { parseJwt } from '../../utils/parseJwt.js';
 import { CompanySchema, companySchema, validStates } from '../../schemas/companySchema.js';
 import { useEffect, useState } from 'react';
 import { Input } from '../../components/Input.js';
@@ -112,8 +111,8 @@ export function EditUserData({ refetchUserData, ...userData }: SaveUserDataProps
                                 {errors.password && <span className='text-red-600'>{(errors.password as any)?.message}</span>}
                             </span>
 
-                            <div className='flex flex-row gap-3 w-full'>
-                                <span className='flex-2'>
+                            <div className='flex flex-col sm:flex-row gap-3 w-full'>
+                                <span className='flex-1 sm:flex-2'>
                                     <Input className="w-full" label='Business' required type="text" placeholder='Digite o ramo da empresa' {...register('business')} />
                                     {(errors as any).business && <span className='text-red-600'>{((errors as any).business)?.message}</span>}
                                 </span>
@@ -128,8 +127,8 @@ export function EditUserData({ refetchUserData, ...userData }: SaveUserDataProps
                                 {(errors as any).email && <span className='text-red-600'>{((errors as any).email)?.message}</span>}
                             </span>
 
-                            <div className='flex flex-row gap-3 w-full'>
-                                <span className='flex-3'>
+                            <div className='flex flex-col sm:flex-row gap-3 w-full'>
+                                <span className='flex-1 sm:flex-3'>
                                     <Input className="w-full" label='Cidade' required type="text" placeholder='Digite a cidade' {...register('city')} />
                                     {(errors as any).city && <span className='text-red-600'>{((errors as any).city)?.message}</span>}
                                 </span>
@@ -155,8 +154,8 @@ export function EditUserData({ refetchUserData, ...userData }: SaveUserDataProps
                                 </span>
                             </div>
 
-                            <div className='flex flex-row gap-3 w-full mb-2'>
-                                <span className='flex-3'>
+                            <div className='flex flex-col sm:flex-row gap-3 w-full mb-2'>
+                                <span className='flex-1 sm:flex-3'>
                                     <Input className="w-full" label='Rua / avenida' required type="text" placeholder='Digite a rua / avenida' {...register('street')} />
                                     {(errors as any).street && <span className='text-red-600'>{((errors as any).street)?.message}</span>}
                                 </span>
@@ -169,8 +168,8 @@ export function EditUserData({ refetchUserData, ...userData }: SaveUserDataProps
                     )}
                 </div>
             </fieldset>
-            <div className="flex flex-row justify-end gap-5">
-                  <Button type="submit" color="blue"> Salvar alterações </Button>
+            <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-5">
+                <Button type="submit" color="blue"> Salvar alterações </Button>
                 <Button type='button' onClick={() => falseEditingProfile()} color="red">
                     Cancelar
                 </Button>

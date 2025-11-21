@@ -68,8 +68,8 @@ function EditJobForm() {
     return (
         <>
             <Navbar role={role} />
-            <div className="mt-10 flex justify-center">
-                <div className="w-4xl p-8 rounded-lg shadow-xl bg-gray-50">
+            <div className="mt-6 md:mt-10 flex justify-center px-4">
+                <div className="w-full max-w-4xl p-4 md:p-8 rounded-lg shadow-xl bg-gray-50">
                     <form onSubmit={handleSubmit(handleEditJob)}>
                         <h1 className="text-2xl font-bold mb-4">Editar Vaga</h1>
                         <div className="flex flex-col gap-2">
