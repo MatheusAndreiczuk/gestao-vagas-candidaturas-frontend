@@ -9,6 +9,7 @@ import { useAuth } from "../../context/AuthContext.js";
 import { Navbar } from "../../components/Navbar.js";
 import { validStates } from "../../schemas/companySchema.js";
 import Select from 'react-select'
+import { validBusiness } from "../../schemas/jobSchema.js";
 import { useState } from "react";
 import { ConfirmJobAnnouncementModal } from "../../components/ConfirmJobAnnouncementModal.js";
 
@@ -68,12 +69,17 @@ function JobForm() {
 
                             <div className="w-full flex flex-col sm:flex-row gap-3 sm:gap-5">
                                 <span className="flex-1 sm:flex-3 w-full">
-                                    <Input
-                                        label="Área de atuação"
-                                        type="text"
-                                        required
-                                        placeholder="Digite a área de atuação"
-                                        {...register('area')}
+                                    <Controller
+                                        name="area"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                options={validBusiness.map((area) => ({ value: area, label: area }))}
+                                                placeholder="Área de atuação"
+                                                value={field.value ? { value: field.value, label: field.value } : null}
+                                                onChange={(option) => field.onChange(option ? option.value : null)}
+                                            />
+                                        )}
                                     />
                                     {errors.area && <p className="text-red-600 text-sm">{errors.area.message}</p>}
                                 </span>

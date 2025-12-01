@@ -6,6 +6,8 @@ import { api } from '../../services/axios';
 import { Briefcase, MapPin, Banknote, Earth, MessageSquare, Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
+import { applicationsListResponseSchema } from '../../validators/serverResponseValidators';
+import { useServerValidation } from '../../hooks/useServerValidation';
 
 function mapJobsFromAPI(rawJobs: any[]): GetJobSchema[] {
     return rawJobs.map(job => ({
@@ -16,6 +18,7 @@ function mapJobsFromAPI(rawJobs: any[]): GetJobSchema[] {
 
 function Applications() {
     const { token, decodedToken } = useAuth();
+    const { validateSilent } = useServerValidation();
     const [applications, setApplications] = useState<GetJobSchema[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
@@ -28,7 +31,14 @@ function Applications() {
             const response = await api.get(`/users/${userId}/jobs`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            const jobs = mapJobsFromAPI(response.data?.items ?? []);
+            
+            const validated = await validateSilent(
+                applicationsListResponseSchema, 
+                response.data, 
+                'user applications'
+            );
+            
+            const jobs = mapJobsFromAPI(validated?.items ?? response.data?.items ?? []);
             setApplications(jobs);
         } catch (error) {
             console.error("Erro ao buscar candidaturas:", error);

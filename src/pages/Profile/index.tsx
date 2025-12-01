@@ -10,6 +10,8 @@ import { CompanySchema } from "../../schemas/companySchema.js"
 import { CreateUserSchema } from "../../schemas/userSchema.js"
 import { Button } from "../../components/Button.js"
 import { useAuth } from "../../context/AuthContext.js"
+import { userResponseSchema, companyResponseSchema } from "../../validators/serverResponseValidators.js"
+import { useServerValidation } from "../../hooks/useServerValidation.js"
 
 // interface User {
 //     username: string,
@@ -32,6 +34,7 @@ function Profile() {
     let [isCompany, setIsCompany] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { validateSilent } = useServerValidation();
 
     const editingProfile = useEditingProfileStore((state) => state.editingProfile);
     const trueEditingProfile = useEditingProfileStore((state) => state.trueEditingProfile);
@@ -65,11 +68,22 @@ function Profile() {
         const response = await api.get(`${getRoute}${userId}`, {
             headers: { Authorization: `Bearer ${token}` }
         })
+        
         if (role === "company") {
-            setCompanyData(response.data)
+            const validated = await validateSilent(
+                companyResponseSchema, 
+                response.data, 
+                'company profile data'
+            );
+            setCompanyData(validated ?? response.data)
             setIsCompany(true)
         } else {
-            setUserData(response.data)
+            const validated = await validateSilent(
+                userResponseSchema, 
+                response.data, 
+                'user profile data'
+            );
+            setUserData(validated ?? response.data)
             setIsCompany(false)
         }
     }

@@ -8,6 +8,8 @@ import { GetJobSchema } from '../../schemas/jobSchema.js'
 import { JobCard } from '../../components/JobCard'
 import { useForm } from 'react-hook-form'
 import { api } from '../../services/axios.js'
+import { jobsListResponseSchema } from '../../validators/serverResponseValidators'
+import { useServerValidation } from '../../hooks/useServerValidation'
 
 
 type FilterData = {
@@ -28,6 +30,7 @@ function mapJobsFromAPI(rawJobs: any[]): GetJobSchema[] {
 
 function Home() {
     const { token, decodedToken } = useAuth();
+    const { validateSilent } = useServerValidation();
     const [allJobs, setAllJobs] = useState<GetJobSchema[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const role = decodedToken?.role;
@@ -35,12 +38,12 @@ function Home() {
 
     const { register, handleSubmit, reset } = useForm<FilterData>({
         defaultValues: {
-            title: null,
-            company: null,
-            state: null,
-            city: null,
-            area: null,
-            salary_range: { min: 0, max: 20000 }
+            title: '',
+            company: '',
+            state: '',
+            city: '',
+            area: '',
+            salary_range: { min: null, max: null }
         }
     })
 
@@ -49,7 +52,8 @@ function Home() {
             const getRoute = role === "company" 
                 ? `/companies/${userID}/jobs` 
                 : '/jobs/search';
-            
+            console.log("Fetching jobs from:", getRoute);
+            console.log("ID enviado token:", userID);
             const response = await api.post(getRoute, 
                 { filters: [{}] },
                 {
@@ -57,8 +61,19 @@ function Home() {
                 }
             )
             
-            const jobs = mapJobsFromAPI(response.data?.items ?? response.data);
-            setAllJobs(jobs);
+            const validated = await validateSilent(
+                jobsListResponseSchema, 
+                response.data, 
+                'jobs list'
+            );
+            
+            if (validated) {
+                const jobs = mapJobsFromAPI(validated.items);
+                setAllJobs(jobs);
+            } else {
+                const jobs = mapJobsFromAPI(response.data?.items ?? response.data ?? []);
+                setAllJobs(jobs);
+            }
         } catch (err) {
             console.error("Erro ao buscar vagas:", err);
         }
@@ -76,16 +91,21 @@ function Home() {
             
             const filters: any = {};
             
-            if (data.title) filters.title = data.title;
-            if (data.company && role === 'user') filters.company = data.company;
-            if (data.area) filters.area = data.area;
-            if (data.state) filters.state = data.state;
-            if (data.city) filters.city = data.city;
+            if (data.title && data.title.trim()) filters.title = data.title.trim();
+            if (data.company && data.company.trim() && role === 'user') filters.company = data.company.trim();
+            if (data.area && data.area.trim()) filters.area = data.area.trim();
+            if (data.state && data.state.trim()) filters.state = data.state.trim();
+            if (data.city && data.city.trim()) filters.city = data.city.trim();
             
-            if (data.salary_range?.min || data.salary_range?.max) {
+            const minSalary = data.salary_range?.min;
+            const maxSalary = data.salary_range?.max;
+            const hasMin = minSalary !== null && minSalary !== undefined && !isNaN(minSalary) && minSalary > 0;
+            const hasMax = maxSalary !== null && maxSalary !== undefined && !isNaN(maxSalary) && maxSalary > 0;
+            
+            if (hasMin || hasMax) {
                 filters.salary_range = {
-                    min: data.salary_range.min || null,
-                    max: data.salary_range.max || null
+                    min: hasMin ? minSalary : null,
+                    max: hasMax ? maxSalary : null
                 };
             }
             
@@ -96,8 +116,20 @@ function Home() {
                 }
             )
             
-            const jobs = mapJobsFromAPI(response.data?.items ?? response.data);
-            setAllJobs(jobs);
+            const validated = await validateSilent(
+                jobsListResponseSchema, 
+                response.data, 
+                'filtered jobs'
+            );
+            
+            if (validated) {
+                const jobs = mapJobsFromAPI(validated.items);
+                setAllJobs(jobs);
+            } else {
+                const jobs = mapJobsFromAPI(response.data?.items ?? response.data ?? []);
+                setAllJobs(jobs);
+            }
+            setIsFilterOpen(false);
         } catch (error) {
             console.error("Erro ao buscar vagas filtradas:", error);
         }
@@ -166,13 +198,17 @@ function Home() {
                                     placeholder='Salário mínimo' 
                                     type='number' 
                                     label="Salário mínimo" 
-                                    {...register('salary_range.min', { valueAsNumber: true })} 
+                                    {...register('salary_range.min', { 
+                                        setValueAs: (v) => v === "" || v === null || v === undefined ? null : Number(v)
+                                    })} 
                                 />
                                 <Input 
                                     placeholder='Salário máximo' 
                                     type='number' 
                                     label="Salário máximo" 
-                                    {...register('salary_range.max', { valueAsNumber: true })} 
+                                    {...register('salary_range.max', { 
+                                        setValueAs: (v) => v === "" || v === null || v === undefined ? null : Number(v)
+                                    })} 
                                 />
                                 <Button type="submit" color="blue" onClick={() => setIsFilterOpen(false)}>Aplicar filtros</Button>
                                 <button 

@@ -12,6 +12,7 @@ import EditJobForm from './pages/Job/editJob'
 import JobApplication from "./pages/Job/jobApplication"
 import Candidates from "./pages/Job/candidates"
 import Applications from "./pages/Applications"
+import ServerError from "./pages/ServerError"
 
 function App() {
 
@@ -76,6 +77,8 @@ function App() {
         } />
 
         <Route path="/connection" element={<Connection />} />
+        
+        <Route path="/server-error" element={<ServerError />} />
       </Routes>
       
       <ConnectionLabel />

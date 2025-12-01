@@ -10,6 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../services/axios";
 import { useState, useEffect } from "react";
 import { ConfirmApplicationModal } from "../../components/ConfirmApplicationModal";
+import { jobResponseSchema } from "../../validators/serverResponseValidators";
+import { useServerValidation } from "../../hooks/useServerValidation";
 
 function JobApplication() {
     const navigate = useNavigate();
@@ -20,6 +22,7 @@ function JobApplication() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [formData, setFormData] = useState<JobApplicationSchema | null>(null);
+    const { validateSilent } = useServerValidation();
 
     const { register, handleSubmit, formState: { errors } } = useForm<JobApplicationSchema>({
         resolver: zodResolver(jobApplicationSchema)
@@ -56,7 +59,14 @@ function JobApplication() {
             const response = await api.get(`/jobs/${jobId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            const jobData = response.data.items;
+            
+            const validated = await validateSilent(
+                jobResponseSchema, 
+                response.data, 
+                'job application data'
+            );
+            
+            const jobData = validated ?? response.data;
             const mappedJob = { ...jobData, id: Number(jobData.job_id) };
             setJob(mappedJob);
         } catch (error) {

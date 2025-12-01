@@ -61,6 +61,13 @@ export const jobApplicationSchema = z.object({
         .max(4000, { message: 'O nível de educação deve ter no máximo 4000 caracteres.' }),
 })
 
+export const validBusiness = [
+    'Administração', 'Agricultura', 'Artes', 'Atendimento ao Cliente', 'Comercial', 'Comunicação', 
+    'Construção Civil', 'Consultoria', 'Contabilidade', 'Design', 'Educação', 'Engenharia', 'Finanças', 
+    'Jurídica', 'Logística', 'Marketing', 'Produção', 'Recursos Humanos', 'Saúde', 'Segurança', 
+    'Tecnologia da Informação', 'Telemarketing', 'Vendas', 'Outros'
+]
+
 export const createJobSchema = getJobSchema.omit({ id: true, company: true });
 
 export type GetJobSchema = z.infer<typeof getJobSchema>;

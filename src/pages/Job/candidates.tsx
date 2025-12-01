@@ -6,6 +6,8 @@ import { api } from '../../services/axios';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { User, Mail, Phone, GraduationCap, Briefcase } from 'lucide-react';
+import { candidatesListResponseSchema } from '../../validators/serverResponseValidators';
+import { useServerValidation } from '../../hooks/useServerValidation';
 
 type Candidate = {
     user_id: number;
@@ -18,6 +20,7 @@ type Candidate = {
 
 function Candidates() {
     const { token, decodedToken } = useAuth();
+    const { validateSilent } = useServerValidation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -36,7 +39,14 @@ function Candidates() {
             const response = await api.get(`/companies/${companyId}/jobs/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setCandidates(response.data?.items ?? []);
+            
+            const validated = await validateSilent(
+                candidatesListResponseSchema, 
+                response.data, 
+                'job candidates'
+            );
+            
+            setCandidates(validated?.items ?? response.data?.items ?? []);
         } catch (error) {
             console.error("Erro ao buscar candidatos:", error);
         } finally {

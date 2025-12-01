@@ -10,6 +10,8 @@ import { Navbar } from "../../components/Navbar.js";
 import { useEffect, useState } from "react";
 import Select from 'react-select'
 import { validStates } from "../../schemas/companySchema.js";
+import { jobResponseSchema } from "../../validators/serverResponseValidators.js";
+import { useServerValidation } from "../../hooks/useServerValidation.js";
 
 export default EditJobForm;
 
@@ -19,6 +21,7 @@ function EditJobForm() {
     const { id } = useParams();
     const role = decodedToken?.role;
     const [jobData, setJobData] = useState<GetJobSchema | null>(null);
+    const { validateSilent } = useServerValidation();
 
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<CreateJobSchema>({
         resolver: zodResolver(createJobSchema),
@@ -29,7 +32,14 @@ function EditJobForm() {
                 const response = await api.get(`/jobs/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                const jobData = response.data.items;
+                
+                const validated = await validateSilent(
+                    jobResponseSchema, 
+                    response.data, 
+                    'edit job data'
+                );
+                
+                const jobData = validated ?? response.data;
                 const mappedJob = { ...jobData, id: Number(jobData.job_id) };
                 setJobData(mappedJob);
                 reset({
