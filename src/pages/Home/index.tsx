@@ -49,31 +49,20 @@ function Home() {
 
     async function fetchAllJobs() {
         try {
-            const getRoute = role === "company" 
-                ? `/companies/${userID}/jobs` 
+            const getRoute = role === "company"
+                ? `/companies/${userID}/jobs`
                 : '/jobs/search';
             console.log("Fetching jobs from:", getRoute);
             console.log("ID enviado token:", userID);
-            const response = await api.post(getRoute, 
+            const response = await api.post(getRoute,
                 { filters: [{}] },
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             )
-            
-            const validated = await validateSilent(
-                jobsListResponseSchema, 
-                response.data, 
-                'jobs list'
-            );
-            
-            if (validated) {
-                const jobs = mapJobsFromAPI(validated.items);
-                setAllJobs(jobs);
-            } else {
-                const jobs = mapJobsFromAPI(response.data?.items ?? response.data ?? []);
-                setAllJobs(jobs);
-            }
+            const jobs = mapJobsFromAPI(response.data?.items ?? response.data ?? []);
+            setAllJobs(jobs);
+
         } catch (err) {
             console.error("Erro ao buscar vagas:", err);
         }
@@ -85,50 +74,39 @@ function Home() {
 
     async function handleSearch(data: FilterData) {
         try {
-            const endpoint = role === "company" 
-                ? `/companies/${userID}/jobs` 
+            const endpoint = role === "company"
+                ? `/companies/${userID}/jobs`
                 : '/jobs/search';
-            
+
             const filters: any = {};
-            
+
             if (data.title && data.title.trim()) filters.title = data.title.trim();
             if (data.company && data.company.trim() && role === 'user') filters.company = data.company.trim();
             if (data.area && data.area.trim()) filters.area = data.area.trim();
             if (data.state && data.state.trim()) filters.state = data.state.trim();
             if (data.city && data.city.trim()) filters.city = data.city.trim();
-            
+
             const minSalary = data.salary_range?.min;
             const maxSalary = data.salary_range?.max;
             const hasMin = minSalary !== null && minSalary !== undefined && !isNaN(minSalary) && minSalary > 0;
             const hasMax = maxSalary !== null && maxSalary !== undefined && !isNaN(maxSalary) && maxSalary > 0;
-            
+
             if (hasMin || hasMax) {
                 filters.salary_range = {
                     min: hasMin ? minSalary : null,
                     max: hasMax ? maxSalary : null
                 };
             }
-            
-            const response = await api.post(endpoint, 
+
+            const response = await api.post(endpoint,
                 { filters: [filters] },
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             )
             
-            const validated = await validateSilent(
-                jobsListResponseSchema, 
-                response.data, 
-                'filtered jobs'
-            );
-            
-            if (validated) {
-                const jobs = mapJobsFromAPI(validated.items);
-                setAllJobs(jobs);
-            } else {
-                const jobs = mapJobsFromAPI(response.data?.items ?? response.data ?? []);
-                setAllJobs(jobs);
-            }
+            const jobs = mapJobsFromAPI(response.data?.items ?? response.data ?? []);
+            setAllJobs(jobs);
             setIsFilterOpen(false);
         } catch (error) {
             console.error("Erro ao buscar vagas filtradas:", error);
@@ -142,10 +120,10 @@ function Home() {
 
     return (
         <div className='h-screen overflow-hidden flex flex-col'>
-            <Navbar role={role}/>
+            <Navbar role={role} />
 
             <div className='flex-1 flex items-start justify-center sm:px-9 pt-6 md:pt-10 md:px-0 relative'>
-                <button 
+                <button
                     onClick={() => setIsFilterOpen(!isFilterOpen)}
                     className='lg:hidden fixed bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-lg z-40 hover:bg-blue-600'
                 >
@@ -169,50 +147,50 @@ function Home() {
                         <div className='h-full flex flex-col'>
                             <div className='flex items-center justify-between mb-4 lg:mb-0'>
                                 <h2 className='font-semibold text-base md:text-lg px-1 pb-3 md:pb-4 border-b w-full'>Filtros</h2>
-                                <button 
+                                <button
                                     onClick={() => setIsFilterOpen(false)}
                                     className='lg:hidden text-gray-500 hover:text-gray-700 ml-2'
                                 >
                                     <X className='w-6 h-6' />
                                 </button>
                             </div>
-                            
+
                             <form onSubmit={handleSubmit(handleSearch)} className='flex flex-col gap-2 md:gap-3 flex-1 overflow-auto pt-3 md:pt-4 px-1'>
-                                <Input 
-                                    placeholder='Digite a área de atuação' 
-                                    label="Área de atuação" 
-                                    {...register('area')} 
+                                <Input
+                                    placeholder='Digite a área de atuação'
+                                    label="Área de atuação"
+                                    {...register('area')}
                                 />
-                                <Input 
-                                    placeholder='Digite a localização' 
-                                    label="Estado" 
-                                    {...register('state')} 
+                                <Input
+                                    placeholder='Digite a localização'
+                                    label="Estado"
+                                    {...register('state')}
                                 />
-                                <Input 
-                                    placeholder='Digite a cidade' 
-                                    label="Cidade" 
-                                    {...register('city')} 
+                                <Input
+                                    placeholder='Digite a cidade'
+                                    label="Cidade"
+                                    {...register('city')}
                                 />
-                                
-                                <Input 
-                                    placeholder='Salário mínimo' 
-                                    type='number' 
-                                    label="Salário mínimo" 
-                                    {...register('salary_range.min', { 
+
+                                <Input
+                                    placeholder='Salário mínimo'
+                                    type='number'
+                                    label="Salário mínimo"
+                                    {...register('salary_range.min', {
                                         setValueAs: (v) => v === "" || v === null || v === undefined ? null : Number(v)
-                                    })} 
+                                    })}
                                 />
-                                <Input 
-                                    placeholder='Salário máximo' 
-                                    type='number' 
-                                    label="Salário máximo" 
-                                    {...register('salary_range.max', { 
+                                <Input
+                                    placeholder='Salário máximo'
+                                    type='number'
+                                    label="Salário máximo"
+                                    {...register('salary_range.max', {
                                         setValueAs: (v) => v === "" || v === null || v === undefined ? null : Number(v)
-                                    })} 
+                                    })}
                                 />
                                 <Button type="submit" color="blue" onClick={() => setIsFilterOpen(false)}>Aplicar filtros</Button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={() => {
                                         handleClearFilters();
                                         setIsFilterOpen(false);
@@ -226,7 +204,7 @@ function Home() {
                     </aside>
 
                     {isFilterOpen && (
-                        <div 
+                        <div
                             className='fixed inset-0 bg-transparent z-40 lg:hidden'
                             onClick={() => setIsFilterOpen(false)}
                         />

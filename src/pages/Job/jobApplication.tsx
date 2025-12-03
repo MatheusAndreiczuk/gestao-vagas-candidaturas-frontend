@@ -60,13 +60,7 @@ function JobApplication() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
-            const validated = await validateSilent(
-                jobResponseSchema, 
-                response.data, 
-                'job application data'
-            );
-            
-            const jobData = validated ?? response.data;
+            const jobData = response.data;
             const mappedJob = { ...jobData, id: Number(jobData.job_id) };
             setJob(mappedJob);
         } catch (error) {

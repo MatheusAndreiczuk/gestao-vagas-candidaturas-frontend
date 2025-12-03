@@ -40,13 +40,7 @@ function Candidates() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
-            const validated = await validateSilent(
-                candidatesListResponseSchema, 
-                response.data, 
-                'job candidates'
-            );
-            
-            setCandidates(validated?.items ?? response.data?.items ?? []);
+            setCandidates(response.data?.items ?? []);
         } catch (error) {
             console.error("Erro ao buscar candidatos:", error);
         } finally {

@@ -70,20 +70,10 @@ function Profile() {
         })
         
         if (role === "company") {
-            const validated = await validateSilent(
-                companyResponseSchema, 
-                response.data, 
-                'company profile data'
-            );
-            setCompanyData(validated ?? response.data)
+            setCompanyData( response.data)
             setIsCompany(true)
         } else {
-            const validated = await validateSilent(
-                userResponseSchema, 
-                response.data, 
-                'user profile data'
-            );
-            setUserData(validated ?? response.data)
+            setUserData(response.data)
             setIsCompany(false)
         }
     }

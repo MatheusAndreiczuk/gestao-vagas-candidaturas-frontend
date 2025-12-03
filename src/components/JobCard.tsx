@@ -70,7 +70,7 @@ export function JobCard({ role, isView, hasApplied, ...props }: JobCardProps) {
             <div className="flex flex-col gap-3 mt-3 md:mt-5 border-t pt-3">
                 <p className="text-xs md:text-sm text-gray-500 flex items-center gap-1">
                     <Banknote className="shrink-0 w-4 h-4" />
-                    <span className="wrap-break-words">{props.salary ? `R$ ${props.salary.toFixed(2)}` : 'Não informado'}</span>
+                    <span className="wrap-break-words">{props.salary ? `${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(props.salary))}` : 'Não informado'}</span>
                 </p>
                 <div className="flex flex-col gap-2 w-full">{role == 'user' && isView ?
                         (

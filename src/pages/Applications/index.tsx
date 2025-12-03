@@ -32,13 +32,7 @@ function Applications() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
-            const validated = await validateSilent(
-                applicationsListResponseSchema, 
-                response.data, 
-                'user applications'
-            );
-            
-            const jobs = mapJobsFromAPI(validated?.items ?? response.data?.items ?? []);
+            const jobs = mapJobsFromAPI(response.data?.items ?? []);
             setApplications(jobs);
         } catch (error) {
             console.error("Erro ao buscar candidaturas:", error);

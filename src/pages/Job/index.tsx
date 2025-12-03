@@ -18,39 +18,30 @@ function Job() {
     const role = decodedToken?.role;
     const userId = decodedToken?.sub;
 
-    async function fetchJob(){
+    async function fetchJob() {
         console.log("ID do job:" + id);
         try {
             const response = await api.get(`/jobs/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            
-            const validated = await validateSilent(jobResponseSchema, response.data, 'job details');
-            
-            if (validated) {
-                const mappedJob = { ...validated, id: Number(validated.job_id) };
-                setJob(mappedJob as GetJobSchema);
-            } else {
-                const jobData = response.data;
-                const mappedJob = { ...jobData, id: Number(jobData.job_id) };
-                setJob(mappedJob);
-            }
+
+            const jobData = response.data;
+            const mappedJob = { ...jobData, id: Number(jobData.job_id) };
+            setJob(mappedJob);
         } catch (error) {
-            return null;
+            return new Error("Error fetching job details");
         }
     }
 
     async function checkIfApplied() {
         if (role !== 'user') return;
-        
+
         try {
             const response = await api.get(`/users/${userId}/jobs`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
-            const validated = await validateSilent(applicationsListResponseSchema, response.data, 'user applications');
-            
-            const applications = validated?.items ?? response.data?.items ?? [];
+
+            const applications = response.data?.items ?? [];
             const applied = applications.some((app: any) => Number(app.job_id) === Number(id));
             setHasApplied(applied);
         } catch (error) {
@@ -66,7 +57,7 @@ function Job() {
 
     return (
         <>
-        <Navbar role={role}/>
+            <Navbar role={role} />
             <div className="mt-10 md:mt-20 flex justify-center px-4">
                 <div className='w-full md:w-5/6 max-w-5xl'>
                     {job ? (
